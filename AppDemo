@@ -1,0 +1,82 @@
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from webdriver_manager.chrome import ChromeDriverManager
+
+import tkinter as tk
+import numpy as np
+import pandas as pd
+from bs4 import BeautifulSoup
+
+class UnitTest():
+    def __init__(self):
+        print('Mod1 UnitTest!')
+
+def Boots():
+        prices_list=[]
+        
+        x1 = entry1.get()
+        
+        label3 = tk.Label(root, text='The Product you want is ' + x1 , font=('helvetica', 10))
+        canvas1.create_window(200, 210, window=label3)
+        
+        #label4 = tk.Label(root, text=float(x1)**0.5, font=('helvetica', 10, 'bold'))
+        #canvas1.create_window(200, 230, window=label4)
+
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        url = 'https://www.boots.com/'
+        driver.get(url)
+
+        BootsSearch = driver.find_element(by=By.ID,value='AlgoliaSearchInput')
+        BootsSearch.send_keys(x1)
+        BootsSearch.send_keys(Keys.ENTER)
+
+        #last_page = int(driver.find_element_by_xpath('(//div[@class="a-text-center"]/ul/li)[last()-1]').text) + 1
+
+        #for page in range(1,last_page):
+            #driver.get(url.format(page)) 
+        soup = BeautifulSoup(driver.page_source, "html.parser")
+        results = soup.find_all("div", {"data-component-type": "s-search-result"})   
+    
+        #for item in results:
+        #    prices_list.append(item)
+        #    if len(prices_list)==100:
+        #        break
+
+
+        #BootsResult = driver.find_element_by_id('product_price')
+        
+        label4 = tk.Label(root, text=BootsResult.text, font=('helvetica', 10, 'bold'))
+        canvas1.create_window(200, 230, window=label4)
+        #df = pd.DataFrame([['boots.com', price.text]], columns=['Website','Price'])
+        #print(BootsResult.text)
+
+if __name__ == '__main__':
+    
+    root= tk.Tk()
+
+    canvas1 = tk.Canvas(root, width=400, height=300, relief='raised')
+    canvas1.pack()
+
+    label1 = tk.Label(root, text='Demo: Price Finding')
+    label1.config(font=('helvetica', 14))
+    canvas1.create_window(200, 25, window=label1)
+
+    label2 = tk.Label(root, text='Name of product:')
+    label2.config(font=('helvetica', 10))
+    canvas1.create_window(200, 100, window=label2)
+
+    entry1 = tk.Entry(root) 
+    canvas1.create_window(200, 140, window=entry1)
+        
+    button1 = tk.Button(text='Find Price', command=Boots, bg='brown', fg='white', font=('helvetica', 9, 'bold'))
+    canvas1.create_window(200, 180, window=button1)
+
+    root.mainloop()
+
+    UnitTest()
